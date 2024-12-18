@@ -1,6 +1,9 @@
 package com.example.codeforces;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,8 +13,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Size(max = 15, message = "Username cannot exceed 15 characters")
     private String username;
+
+    @Size(max = 50, message = "Email cannot exceed 50 characters")
     private String email;
+
+    private String passwordHash;
+
     private Integer contestsAttended;
     private LocalDateTime registrationDate;
 
@@ -19,18 +28,17 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    // Constructors
     public User() {}
 
-    public User(String username, String email, Integer contestsAttended, LocalDateTime registrationDate, Role role) {
+    public User(String username, String email, String password, Integer contestsAttended, LocalDateTime registrationDate, Role role) {
         this.username = username;
         this.email = email;
+        setPassword(password);
         this.contestsAttended = contestsAttended;
         this.registrationDate = registrationDate;
         this.role = role;
     }
 
-    // Getters and Setters
     public Long getUserId() {
         return userId;
     }
@@ -78,4 +86,20 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPassword(String password) {
+        this.passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public boolean checkPassword(String password) {
+        System.out.print("> PASSWORD: " + password + '\n');
+        System.out.print("> DB PASSWORD HASH: " + this.passwordHash + '\n');
+        return BCrypt.checkpw(password, this.passwordHash);
+    }
 }
+// $2a$10$sq4YEUj6Vm14XQAcu1u7uu2JNCrxMZIoXYl3V5yha1LfVFFhILEny
+// $2a$10$sq4YEUj6Vm14XQAcu1u7uu2JNCrxMZIoXYl3V5yha1LfVFFhILEny

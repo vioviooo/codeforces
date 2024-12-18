@@ -38,8 +38,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // Thymeleaf (for front-end)
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // Test
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // JUnit platform
-//    implementation 'org.springframework.security:spring-security-crypto'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-crypto'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.projectlombok:lombok:1.18.24'  // Or whatever the latest version is
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

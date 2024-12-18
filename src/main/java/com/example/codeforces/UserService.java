@@ -3,6 +3,9 @@ package com.example.codeforces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,17 +18,14 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
-    // Get all users
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Get a user by ID
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    // Create a new user
     public User createUser(User user) {
         if (user.getRole() != null && roleRepository.existsById(user.getRole().getRoleId())) {
             return userRepository.save(user);
@@ -33,7 +33,6 @@ public class UserService {
         throw new IllegalArgumentException("Role not found or invalid user data.");
     }
 
-    // Update an existing user
     public Optional<User> updateUser(Long id, User updatedUser) {
         return userRepository.findById(id).map(existingUser -> {
             existingUser.setUsername(updatedUser.getUsername());
@@ -45,12 +44,32 @@ public class UserService {
         });
     }
 
-    // Delete a user
     public boolean deleteUser(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             return true;
         }
         return false;
+    }
+
+    public User registerUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
+        Role defaultRole = roleRepository.findByRoleName("USER")
+                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+        user.setRole(defaultRole);
+        user.setContestsAttended(0);
+        user.setRegistrationDate(LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
+        user.setPassword(user.getPasswordHash());
+        return userRepository.save(user);
+    }
+
+    public Optional<User> login(String username, String password) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent() && user.get().checkPassword(password)) {
+            return user;
+        }
+        return Optional.empty();
     }
 }
