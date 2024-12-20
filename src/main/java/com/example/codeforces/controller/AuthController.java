@@ -66,4 +66,26 @@ public class AuthController {
 
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.status(401).build());
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<User> getUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == "anonymousUser") {
+            return ResponseEntity.status(401).build();
+        }
+
+        String username = authentication.getName();
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.map(ResponseEntity::ok).orElse(ResponseEntity.status(404).build());
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok().build();
+    }
 }

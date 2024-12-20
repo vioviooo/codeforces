@@ -1,0 +1,181 @@
+<!--&lt;!&ndash; WebJars Bootstrap CSS &ndash;&gt;-->
+<!--<link href="/webjars/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">-->
+
+<!--&lt;!&ndash; WebJars Bootstrap JS &ndash;&gt;-->
+<!--<script src="/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Main</title>-->
+<!--  <style>-->
+<!--    body {-->
+<!--      font-family: Arial, sans-serif;-->
+<!--      display: flex;-->
+<!--      justify-content: center;-->
+<!--      align-items: center;-->
+<!--      height: 100vh;-->
+<!--      margin: 0;-->
+<!--      background-color: #f4f4f4;-->
+<!--    }-->
+<!--    .container {-->
+<!--      background-color: white;-->
+<!--      padding: 20px;-->
+<!--      border-radius: 10px;-->
+<!--      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--      width: 300px;-->
+<!--      text-align: center;-->
+<!--    }-->
+<!--    button {-->
+<!--      padding: 10px;-->
+<!--      background-color: #4CAF50;-->
+<!--      color: white;-->
+<!--      border: none;-->
+<!--      cursor: pointer;-->
+<!--      border-radius: 5px;-->
+<!--      margin-top: 20px;-->
+<!--    }-->
+<!--    button:hover {-->
+<!--      background-color: #45a049;-->
+<!--    }-->
+<!--  </style>-->
+<!--  <script>-->
+<!--    async function fetchUserData() {-->
+<!--      const response = await fetch("/auth/user", {-->
+<!--        method: "GET",-->
+<!--        headers: {-->
+<!--          "Content-Type": "application/json"-->
+<!--        }-->
+<!--      });-->
+
+<!--      if (response.ok) {-->
+<!--        const user = await response.json();-->
+<!--        document.getElementById("user-info").innerText = `Welcome, ${user.username}!`;-->
+<!--      } else {-->
+<!--        alert("Failed to fetch user data. Redirecting to login...");-->
+<!--        window.location.href = "/login";-->
+<!--      }-->
+<!--    }-->
+
+<!--    async function logout() {-->
+<!--      const response = await fetch("/auth/logout", {-->
+<!--        method: "POST",-->
+<!--        headers: {-->
+<!--          "Content-Type": "application/json"-->
+<!--        }-->
+<!--      });-->
+
+<!--      if (response.ok) {-->
+<!--        alert("Logged out successfully!");-->
+<!--        window.location.href = "/login";-->
+<!--      } else {-->
+<!--        alert("Failed to log out!");-->
+<!--      }-->
+<!--    }-->
+
+<!--    window.onload = fetchUserData;-->
+<!--  </script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--  <h1>Main Page</h1>-->
+<!--  <p id="user-info"></p>-->
+<!--  <button onclick="logout()">Log Out</button>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+  <!-- WebJars Bootstrap CSS -->
+  <link href="/webjars/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- WebJars Bootstrap JS -->
+  <script src="/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+    .offcanvas-header {
+      border-bottom: 1px solid #dee2e6;
+    }
+    .offcanvas-title {
+      font-size: 1.25rem;
+    }
+    #user-info {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+  </style>
+  <script>
+    async function fetchUserData() {
+      const response = await fetch("/auth/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        document.getElementById("user-info").innerText = `Welcome, ${user.username}!`;
+      } else {
+        alert("Failed to fetch user data. Redirecting to login...");
+        window.location.href = "/login";
+      }
+    }
+
+    async function logout() {
+      const response = await fetch("/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (response.ok) {
+        alert("Logged out successfully!");
+        window.location.href = "/login";
+      } else {
+        alert("Failed to log out!");
+      }
+    }
+
+    window.onload = fetchUserData;
+  </script>
+</head>
+<body>
+<!-- Hamburger Icon -->
+<button class="btn btn-primary position-absolute top-0 start-0 m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+  <span class="navbar-toggler-icon"></span>
+</button>
+
+<!-- Sidebar -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="list-group mb-4">
+      <li class="list-group-item"><a href="/profile" class="text-decoration-none">Profile</a></li>
+      <li class="list-group-item"><a href="/option2" class="text-decoration-none">Option 2</a></li>
+      <li class="list-group-item"><a href="/option3" class="text-decoration-none">Option 3</a></li>
+    </ul>
+    <button class="btn btn-danger w-100" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
+<!-- User Info -->
+<p id="user-info"></p>
+</body>
+</html>

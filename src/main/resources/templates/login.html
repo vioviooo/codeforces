@@ -1,9 +1,96 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Login</title>-->
+<!--    <script>-->
+<!--        async function loginUser(event) {-->
+<!--            event.preventDefault();-->
+<!--            const data = {-->
+<!--                username: document.getElementById("login-username").value,-->
+<!--                password: document.getElementById("login-password").value-->
+<!--            };-->
+
+<!--            const response = await fetch("/auth/login", {-->
+<!--                method: "POST",-->
+<!--                headers: { "Content-Type": "application/json" },-->
+<!--                body: JSON.stringify(data)-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                alert("Login successful!");-->
+<!--                window.location.href = "/";-->
+<!--            } else {-->
+<!--                alert("Login failed! Check your credentials.");-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Login</h1>-->
+<!--<form onsubmit="loginUser(event)">-->
+<!--    <label for="login-username">Username:</label>-->
+<!--    <input type="text" id="login-username" required><br>-->
+<!--    <label for="login-password">Password:</label>-->
+<!--    <input type="password" id="login-password" required><br>-->
+<!--    <button type="submit">Login</button>-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label, input, button {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .register-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
     <script>
         async function loginUser(event) {
             event.preventDefault();
@@ -20,7 +107,7 @@
 
             if (response.ok) {
                 alert("Login successful!");
-                window.location.href = "/";
+                window.location.href = "/main";
             } else {
                 alert("Login failed! Check your credentials.");
             }
@@ -28,13 +115,18 @@
     </script>
 </head>
 <body>
-<h1>Login</h1>
-<form onsubmit="loginUser(event)">
-    <label for="login-username">Username:</label>
-    <input type="text" id="login-username" required><br>
-    <label for="login-password">Password:</label>
-    <input type="password" id="login-password" required><br>
-    <button type="submit">Login</button>
-</form>
+<div class="container">
+    <h1>Login</h1>
+    <form onsubmit="loginUser(event)">
+        <label for="login-username">Username:</label>
+        <input type="text" id="login-username" required><br>
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" required><br>
+        <button type="submit">Login</button>
+    </form>
+    <div class="register-link">
+        <p>Don't have an account? <a href="/register">Sign up</a></p>
+    </div>
+</div>
 </body>
 </html>

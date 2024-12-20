@@ -65,7 +65,6 @@ public class UserService {
         user.setRole(defaultRole);
         user.setContestsAttended(0);
         user.setRegistrationDate(LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()));
-        user.setPassword(user.getPasswordHash());
         return userRepository.save(user);
     }
 
