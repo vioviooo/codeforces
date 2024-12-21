@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,6 +34,8 @@ public class AuthController {
     private UserRepository userRepository;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
@@ -67,17 +71,50 @@ public class AuthController {
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.status(401).build());
     }
 
+//    @GetMapping("/user")
+//    public ResponseEntity<User> getUserInfo() {
+////        System.out.print("GETTING USER INFO!");
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == "anonymousUser") {
+//            return ResponseEntity.status(401).build();
+//        }
+//
+//        String username = authentication.getName();
+//        Optional<User> user = userRepository.findByUsername(username);
+//        return user.map(ResponseEntity::ok).orElse(ResponseEntity.status(404).build());
+//    }
+
     @GetMapping("/user")
-    public ResponseEntity<User> getUserInfo() {
+    public ResponseEntity<Map<String, Object>> getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == "anonymousUser") {
-            return ResponseEntity.status(401).build();
+
+        // Check if the user is authenticated and not anonymous
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return ResponseEntity.status(401).build();  // Unauthorized response if not authenticated
         }
 
-        String username = authentication.getName();
-        Optional<User> user = userRepository.findByUsername(username);
-        return user.map(ResponseEntity::ok).orElse(ResponseEntity.status(404).build());
+        String username = authentication.getName();  // Get the username from authentication context
+
+        // Fetch the user from the repository
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(404).build();  // Return 404 if user not found
+        }
+
+        User user = userOptional.get();
+
+        // Get the contest count using the custom SQL function
+        Integer contestsCount = jdbcTemplate.queryForObject(
+                "SELECT count_user_contests(?)", Integer.class, username);
+
+        // Prepare the response map with user info and contest count
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", user);
+        response.put("contestsCount", contestsCount);
+
+        return ResponseEntity.ok(response);  // Return the response with user info and contest count
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {

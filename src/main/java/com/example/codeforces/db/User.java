@@ -111,8 +111,6 @@ public class User {
     }
 
     public boolean checkPassword(String password) {
-//        System.out.print("> PASSWORD: " + password + '\n');
-//        System.out.print("> DB PASSWORD HASH: " + this.passwordHash + '\n');
         return BCrypt.checkpw(password, this.passwordHash);
     }
 }

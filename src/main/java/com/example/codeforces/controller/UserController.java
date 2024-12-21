@@ -75,4 +75,15 @@ public class UserController {
         }
         return ResponseEntity.ok(contests.stream().map(UserContest::getContest).toList());
     }
+
+//    @GetMapping("/contests/count")
+//    public ResponseEntity<Integer> getUserContestsCount(Principal principal) {
+//        if (principal == null || principal.getName() == null) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        int contestsCount = userContestRepository.getContestCountByUsername(principal.getName());
+//
+//        return ResponseEntity.ok(contestsCount);
+//    }
 }
