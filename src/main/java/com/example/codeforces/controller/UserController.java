@@ -1,8 +1,7 @@
 package com.example.codeforces.controller;
 //import com.example.codeforces.repository.UserContestRepository;
-import com.example.codeforces.db.Contest;
-import com.example.codeforces.db.User;
-import com.example.codeforces.db.UserContest;
+import com.example.codeforces.db.*;
+import com.example.codeforces.repository.UserArchiveRepository;
 import com.example.codeforces.repository.UserContestRepository;
 import com.example.codeforces.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,11 @@ public class UserController {
 
     private final UserContestRepository userContestRepository;
 
-    public UserController(UserContestRepository userContestRepository) {
+    private final UserArchiveRepository userArchiveRepository;
+
+    public UserController(UserContestRepository userContestRepository, UserArchiveRepository userArchiveRepository) {
         this.userContestRepository = userContestRepository;
+        this.userArchiveRepository = userArchiveRepository;
     }
 
     @GetMapping
@@ -76,14 +78,16 @@ public class UserController {
         return ResponseEntity.ok(contests.stream().map(UserContest::getContest).toList());
     }
 
-//    @GetMapping("/contests/count")
-//    public ResponseEntity<Integer> getUserContestsCount(Principal principal) {
-//        if (principal == null || principal.getName() == null) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        int contestsCount = userContestRepository.getContestCountByUsername(principal.getName());
-//
-//        return ResponseEntity.ok(contestsCount);
-//    }
+    @GetMapping("/archive-problems")
+    public ResponseEntity<List<ArchiveProblem>> getUserArchive(Principal principal) {
+        if (principal == null || principal.getName() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<UserProblem> contests = userArchiveRepository.findByUserUsername(principal.getName());
+
+        if (contests.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(contests.stream().map(UserProblem::getProblem).toList());
+    }
 }

@@ -26,6 +26,7 @@ public class ArchiveProblemController {
     // 2. Get all problems
     @GetMapping
     public ResponseEntity<List<ArchiveProblem>> getAllProblems() {
+        System.out.print("\n WELL I DO ACTUALLY WORK \n");
         List<ArchiveProblem> problems = archiveProblemService.getAllProblems();
         return ResponseEntity.ok(problems);
     }

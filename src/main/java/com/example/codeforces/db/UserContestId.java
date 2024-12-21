@@ -17,7 +17,6 @@ public class UserContestId implements Serializable {
         this.contestId = contestId;
     }
 
-    // equals() and hashCode()
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

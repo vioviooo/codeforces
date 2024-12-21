@@ -35,4 +35,9 @@ public class PageController {
     public String contestPage() {
         return "contest";
     }
+
+    @GetMapping("/archive")
+    public String archivePage() {
+        return "archive"; // view name or resource path
+    }
 }

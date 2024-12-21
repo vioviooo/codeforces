@@ -1,10 +1,9 @@
 package com.example.codeforces.db;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "archive_problems")
@@ -18,6 +17,14 @@ public class ArchiveProblem {
     private String statement;
     private Integer timeLimit; // in seconds
     private Integer memoryLimit; // in MB
+
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<UserProblem> userProblems;
+
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ProblemTest> problemTests;
 
     // Default constructor
     public ArchiveProblem() {}
@@ -78,5 +85,13 @@ public class ArchiveProblem {
 
     public void setMemoryLimit(Integer memoryLimit) {
         this.memoryLimit = memoryLimit;
+    }
+
+    public List<ProblemTest> getProblemTests() {
+        return problemTests;
+    }
+
+    public void setProblemTests(List<ProblemTest> problemTests) {
+        this.problemTests = problemTests;
     }
 }
