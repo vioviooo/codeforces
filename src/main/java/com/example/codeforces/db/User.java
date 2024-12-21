@@ -1,10 +1,14 @@
 package com.example.codeforces.db;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -27,6 +31,11 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<UserContest> contests = new HashSet<>();
+
 
     public User() {}
 
@@ -79,9 +88,7 @@ public class User {
         this.registrationDate = registrationDate;
     }
 
-    public Role getRole() {
-        return role;
-    }
+    public Role getRole() { return role; }
 
     public void setRole(Role role) {
         this.role = role;
@@ -95,9 +102,17 @@ public class User {
         this.passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
+    public Set<UserContest> getContests() {
+        return contests;
+    }
+
+    public void setContests(Set<UserContest> contests) {
+        this.contests = contests;
+    }
+
     public boolean checkPassword(String password) {
-        System.out.print("> PASSWORD: " + password + '\n');
-        System.out.print("> DB PASSWORD HASH: " + this.passwordHash + '\n');
+//        System.out.print("> PASSWORD: " + password + '\n');
+//        System.out.print("> DB PASSWORD HASH: " + this.passwordHash + '\n');
         return BCrypt.checkpw(password, this.passwordHash);
     }
 }

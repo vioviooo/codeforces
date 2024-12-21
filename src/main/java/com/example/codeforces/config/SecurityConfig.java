@@ -24,37 +24,13 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfig {
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(authz -> authz
-//                        .requestMatchers("/auth/register", "/auth/login", "/register", "/login").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .permitAll()
-////                        .successHandler(this::authenticationSuccessHandler)
-//                        .defaultSuccessUrl("/login/main", true)
-//                )
-////                .formLogin(form -> {})
-//                .logout(logout -> logout
-//                        .logoutUrl("/auth/logout")
-//                        .logoutSuccessUrl("/login")
-//                        .permitAll()
-//                )
-//        ;
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/auth/register", "/auth/login", "/register", "/login").permitAll()
-                        .requestMatchers("/main").authenticated()
+                        .requestMatchers("/main", "/profile", "/contest").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

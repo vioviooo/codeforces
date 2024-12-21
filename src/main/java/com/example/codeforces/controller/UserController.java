@@ -1,11 +1,16 @@
 package com.example.codeforces.controller;
-
+//import com.example.codeforces.repository.UserContestRepository;
+import com.example.codeforces.db.Contest;
 import com.example.codeforces.db.User;
+import com.example.codeforces.db.UserContest;
+import com.example.codeforces.repository.UserContestRepository;
 import com.example.codeforces.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -14,6 +19,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private final UserContestRepository userContestRepository;
+
+    public UserController(UserContestRepository userContestRepository) {
+        this.userContestRepository = userContestRepository;
+    }
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -50,5 +61,18 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/contests")
+    public ResponseEntity<List<Contest>> getUserContests(Principal principal) {
+        if (principal == null || principal.getName() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<UserContest> contests = userContestRepository.findByUserUsername(principal.getName());
+
+        if (contests.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(contests.stream().map(UserContest::getContest).toList());
     }
 }

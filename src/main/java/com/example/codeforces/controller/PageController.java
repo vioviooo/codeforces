@@ -25,4 +25,14 @@ public class PageController {
     public String mainPage() {
         return "main";
     }
+
+    @GetMapping("/profile")
+    public String profilePage() {
+        return "profile";
+    }
+
+    @GetMapping("/contest")
+    public String contestPage() {
+        return "contest";
+    }
 }

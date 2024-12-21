@@ -1,23 +1,27 @@
 package com.example.codeforces.db;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "contests")
 public class Contest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long contestId;  // Primary key field
+    private Long contestId; // Primary key field
 
     private String name;
     private LocalDateTime startTime;
-    private Integer duration;  // in minutes
+    private Integer duration; // in minutes
     private String difficulty;
+
+    @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<UserContest> users = new HashSet<>();
 
     // Default constructor
     public Contest() {}
@@ -69,5 +73,13 @@ public class Contest {
 
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public Set<UserContest> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserContest> users) {
+        this.users = users;
     }
 }
