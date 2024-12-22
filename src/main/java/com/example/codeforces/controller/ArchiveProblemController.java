@@ -46,4 +46,13 @@ public class ArchiveProblemController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+
+    @GetMapping("/aboba/{id}")
+    public ResponseEntity<Void> deleteArchiveProblem(@PathVariable Long id) {
+        if (archiveProblemService.deleteArchiveProblem(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

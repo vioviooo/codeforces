@@ -13,12 +13,12 @@ public class UserContest {
 
     @ManyToOne
     @MapsId("userId")
-    @JsonBackReference
+    @JsonBackReference("reference1")
     private User user;
 
     @ManyToOne
     @MapsId("contestId")
-    @JsonBackReference
+    @JsonBackReference("reference2")
     private Contest contest;
 
     private String participationStatus;

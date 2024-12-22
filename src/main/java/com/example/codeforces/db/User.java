@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.LocalDateTime;
@@ -33,8 +35,14 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("reference1")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<UserContest> contests = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("reference-user-userproblem")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<UserProblem> problems = new HashSet<>();
 
 
     public User() {}
@@ -108,6 +116,14 @@ public class User {
 
     public void setContests(Set<UserContest> contests) {
         this.contests = contests;
+    }
+
+    public Set<UserProblem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(Set<UserProblem> problems) {
+        this.problems = problems;
     }
 
     public boolean checkPassword(String password) {

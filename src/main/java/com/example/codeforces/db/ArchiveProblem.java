@@ -2,8 +2,12 @@ package com.example.codeforces.db;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "archive_problems")
@@ -19,12 +23,20 @@ public class ArchiveProblem {
     private Integer memoryLimit; // in MB
 
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference("reference-archiveproblem-userproblem")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<UserProblem> userProblems;
 
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("reference-problemtest-archiveproblem")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProblemTest> problemTests;
+
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("reference-contest-archiveproblem")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<ContestProblem> contestProblems = new HashSet<>();
+
 
     // Default constructor
     public ArchiveProblem() {}
@@ -93,5 +105,21 @@ public class ArchiveProblem {
 
     public void setProblemTests(List<ProblemTest> problemTests) {
         this.problemTests = problemTests;
+    }
+
+    public List<UserProblem> getUserProblems() {
+        return userProblems;
+    }
+
+    public void setUserProblems(List<UserProblem> userProblems) {
+        this.userProblems = userProblems;
+    }
+
+    public Set<ContestProblem> getContestProblems() {
+        return contestProblems;
+    }
+
+    public void setContestProblems(Set<ContestProblem> contestProblems) {
+        this.contestProblems = contestProblems;
     }
 }

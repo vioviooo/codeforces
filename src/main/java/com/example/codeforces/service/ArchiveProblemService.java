@@ -35,4 +35,13 @@ public class ArchiveProblemService {
         return archiveProblemRepository.findById(id)
                 .map(ArchiveProblemDetailDTO::fromEntity);
     }
+
+    // Delete a contest
+    public boolean deleteArchiveProblem(Long id) {
+        if (archiveProblemRepository.existsById(id)) {
+            archiveProblemRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

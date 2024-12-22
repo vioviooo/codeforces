@@ -2,6 +2,8 @@ package com.example.codeforces.db;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -20,8 +22,14 @@ public class Contest {
     private String difficulty;
 
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("reference2")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<UserContest> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("reference-contest-contestproblem")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<ContestProblem> contestProblems = new HashSet<>();
 
     // Default constructor
     public Contest() {}
@@ -81,5 +89,13 @@ public class Contest {
 
     public void setUsers(Set<UserContest> users) {
         this.users = users;
+    }
+
+    public Set<ContestProblem> getContestProblems() {
+        return contestProblems;
+    }
+
+    public void setContestProblems(Set<ContestProblem> contestProblems) {
+        this.contestProblems = contestProblems;
     }
 }

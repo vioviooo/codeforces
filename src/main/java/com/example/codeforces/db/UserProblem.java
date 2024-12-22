@@ -42,12 +42,12 @@ public class UserProblem {
 
     @ManyToOne
     @MapsId("userId")
-    @JsonBackReference
+    @JsonBackReference("reference-user-userproblem")
     private User user;
 
     @ManyToOne
     @MapsId("problemId")
-    @JsonBackReference
+    @JsonBackReference("reference-archiveproblem-userproblem")
     private ArchiveProblem problem;
 
     private String status;

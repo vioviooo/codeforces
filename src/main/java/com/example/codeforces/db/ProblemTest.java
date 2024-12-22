@@ -79,7 +79,7 @@ public class ProblemTest {
     @ManyToOne
     @MapsId("problemId") // Maps the problemId in the composite key
     @JoinColumn(name = "problem_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("reference-problemtest-archiveproblem")
     private ArchiveProblem problem;
 
     private String inputData;
