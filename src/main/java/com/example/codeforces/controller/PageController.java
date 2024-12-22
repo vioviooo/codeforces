@@ -40,4 +40,9 @@ public class PageController {
     public String archivePage() {
         return "archive"; // view name or resource path
     }
+
+    @GetMapping("/archive-problems/problem-description")
+    public String problemDetailsPage() {
+        return "problem-description"; // view name or resource path
+    }
 }

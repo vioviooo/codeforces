@@ -1,174 +1,9 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Archive</title>-->
-<!--    &lt;!&ndash; WebJars Bootstrap CSS &ndash;&gt;-->
-<!--    <link href="/webjars/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">-->
-<!--    &lt;!&ndash; WebJars Bootstrap JS &ndash;&gt;-->
-<!--    <script src="/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>-->
-<!--    <style>-->
-<!--        body {-->
-<!--            background-color: #f4f4f4;-->
-<!--            padding: 20px;-->
-<!--        }-->
-<!--        .profile-card {-->
-<!--            max-width: 800px;-->
-<!--            margin: auto;-->
-<!--            background: #fff;-->
-<!--            border-radius: 10px;-->
-<!--            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);-->
-<!--            padding: 20px;-->
-<!--        }-->
-<!--        .profile-header {-->
-<!--            text-align: center;-->
-<!--            margin-bottom: 20px;-->
-<!--        }-->
-<!--        .profile-header h1 {-->
-<!--            margin: 0;-->
-<!--        }-->
-<!--    </style>-->
-<!--    <script>-->
-<!--        // let showAllArchive = true;-->
-
-<!--        async function fetchArchive() {-->
-<!--            try {-->
-<!--                const endpoint = "/archive-problems";-->
-<!--                const response = await fetch(endpoint);-->
-<!--                const archiveData = await response.json();-->
-
-<!--                const tableBody = document.getElementById('archive-table-body');-->
-<!--                tableBody.innerHTML = '';-->
-
-<!--                archiveData.forEach(problem => {-->
-<!--                    const row = document.createElement('tr');-->
-
-<!--                    const userProblems = problem.userProblems.length > 0-->
-<!--                        ? problem.userProblems[0]-->
-<!--                        : { status: 'Not Attempted', attempts: 0, solvedAt: 'N/A' };-->
-
-<!--                    row.innerHTML = `-->
-<!--            <td>${problem.problemId}</td>-->
-<!--            <td>${problem.title}</td>-->
-<!--            <td>${problem.difficulty}</td>-->
-<!--            <td>${problem.statement}</td>-->
-<!--            <td>${userProblems.status}</td>-->
-<!--            <td>${userProblems.attempts}</td>-->
-<!--            <td>${userProblems.solvedAt == null ? "N/A" : formatDate(userProblems.solvedAt)}</td>-->
-<!--          `;-->
-
-<!--                    tableBody.appendChild(row);-->
-<!--                });-->
-<!--            } catch (error) {-->
-<!--                console.error("Error fetching archive data:", error);-->
-<!--                const tableBody = document.getElementById('archive-table-body');-->
-<!--                tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Failed to load archive data.</td></tr>`;-->
-<!--            }-->
-<!--        }-->
-
-<!--        function formatDate(dateString) {-->
-<!--            if (dateString === 'N/A') return 'N/A';-->
-
-<!--            const options = {-->
-<!--                month: 'long',-->
-<!--                day: 'numeric',-->
-<!--                hour: 'numeric',-->
-<!--                minute: 'numeric',-->
-<!--                timeZone: 'Europe/Moscow',-->
-<!--                hour12: true-->
-<!--            };-->
-
-<!--            const date = new Date(dateString);-->
-<!--            return `${date.toLocaleString('en-US', options)} MSK`;-->
-<!--        }-->
-
-<!--        function toggleArchiveView() {-->
-<!--            showAllArchive = !showAllArchive;-->
-<!--            const toggleButton = document.getElementById('toggle-archive-button');-->
-<!--            toggleButton.innerText = showAllArchive ? 'Show Solved Problems' : 'Show All Problems';-->
-<!--            fetchArchive();-->
-<!--        }-->
-
-<!--        document.addEventListener('DOMContentLoaded', fetchArchive);-->
-<!--    </script>-->
-<!--</head>-->
-<!--<body>-->
-<!--&lt;!&ndash; Sidebar &ndash;&gt;-->
-<!--<button class="btn btn-primary position-absolute top-0 start-0 m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">-->
-<!--    <span class="navbar-toggler-icon"></span>-->
-<!--</button>-->
-<!--<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">-->
-<!--    <div class="offcanvas-header">-->
-<!--        <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>-->
-<!--        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>-->
-<!--    </div>-->
-<!--    <div class="offcanvas-body">-->
-<!--        <ul class="list-group mb-4">-->
-<!--            <li class="list-group-item"><a href="/profile" class="text-decoration-none">Profile</a></li>-->
-<!--            <li class="list-group-item"><a href="/contest" class="text-decoration-none">Contest</a></li>-->
-<!--            <li class="list-group-item"><a href="/archive" class="text-decoration-none">Archive</a></li>-->
-<!--        </ul>-->
-<!--        <button class="btn btn-danger w-100" onclick="logout()">Log Out</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Archive Page &ndash;&gt;-->
-<!--<div class="profile-card">-->
-<!--    <div class="profile-header">-->
-<!--        <h1 class="mb-4">Archive</h1>-->
-<!--        <button id="toggle-archive-button" class="btn btn-secondary mb-3" onclick="toggleArchiveView()">Show My Archive</button>-->
-<!--    </div>-->
-<!--    <div class="table-responsive">-->
-<!--        <table class="table table-bordered table-hover">-->
-<!--            <thead class="table-dark">-->
-<!--            <tr>-->
-<!--                <th>№</th>-->
-<!--                <th>Title</th>-->
-<!--                <th>Difficulty</th>-->
-<!--                <th>Statement</th>-->
-<!--                <th>Status</th>-->
-<!--                <th>Attempts</th>-->
-<!--                <th>Solved At</th>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody id="archive-table-body">-->
-<!--            &lt;!&ndash; Archive data will be dynamically loaded here &ndash;&gt;-->
-<!--            </tbody>-->
-<!--        </table>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--<script>-->
-<!--    async function logout() {-->
-<!--        try {-->
-<!--            const response = await fetch("/auth/logout", {-->
-<!--                method: "POST",-->
-<!--                headers: {-->
-<!--                    "Content-Type": "application/json"-->
-<!--                }-->
-<!--            });-->
-
-<!--            if (response.ok) {-->
-<!--                alert("Logged out successfully!");-->
-<!--                window.location.href = "/login";-->
-<!--            } else {-->
-<!--                alert("Failed to log out!");-->
-<!--            }-->
-<!--        } catch (error) {-->
-<!--            console.error("Error logging out:", error);-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive</title>
+    <title>Problem Archive</title>
     <!-- WebJars Bootstrap CSS -->
     <link href="/webjars/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- WebJars Bootstrap JS -->
@@ -193,61 +28,75 @@
         .profile-header h1 {
             margin: 0;
         }
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: center;
+            padding: 12px;
+        }
+        th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+        td {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .difficulty {
+            font-size: 0.9rem;
+            padding: 3px 8px;
+            border-radius: 3px;
+            color: #fff;
+            text-align: center;
+        }
+        .easy {
+            background-color: #28a745; /* Green for easy */
+        }
+        .medium {
+            background-color: #ff9800; /* Orange for medium */
+        }
+        .hard {
+            background-color: #dc3545; /* Red for hard */
+        }
+        .view-details-btn {
+            text-decoration: none;
+            padding: 5px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .view-details-btn:hover {
+            background-color: #0056b3;
+        }
+        /* Hover Effect Styling for Status */
+        .status-hover {
+            position: relative;
+            cursor: pointer;
+        }
+        .status-hover::after {
+            content: attr(data-hover);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .status-hover:hover::after {
+            opacity: 1;
+        }
     </style>
-    <script>
-        async function fetchArchive() {
-            try {
-                const endpoint = "/archive-problems";
-                const response = await fetch(endpoint);
-                const archiveData = await response.json();
-
-                const tableBody = document.getElementById('archive-table-body');
-                tableBody.innerHTML = '';
-
-                archiveData.forEach(problem => {
-                    const row = document.createElement('tr');
-
-                    const userProblems = problem.userProblems.length > 0
-                        ? problem.userProblems[0]
-                        : { status: 'Not Attempted', attempts: 0, solvedAt: 'N/A' };
-
-                    row.innerHTML = `
-                        <td>${problem.problemId}</td>
-                        <td>${problem.title}</td>
-                        <td>${problem.difficulty}</td>
-                        <td>${problem.statement}</td>
-                        <td>${userProblems.status}</td>
-                        <td>${userProblems.attempts}</td>
-                        <td>${userProblems.solvedAt == null ? "N/A" : formatDate(userProblems.solvedAt)}</td>
-                    `;
-
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error("Error fetching archive data:", error);
-                const tableBody = document.getElementById('archive-table-body');
-                tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Failed to load archive data.</td></tr>`;
-            }
-        }
-
-        function formatDate(dateString) {
-            if (dateString === 'N/A') return 'N/A';
-
-            const options = {
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                timeZone: 'Europe/Moscow',
-                hour12: true
-            };
-
-            const date = new Date(dateString);
-            return `${date.toLocaleString('en-US', options)} MSK`;
-        }
-
-        document.addEventListener('DOMContentLoaded', fetchArchive);
-    </script>
 </head>
 <body>
 <!-- Sidebar -->
@@ -269,32 +118,70 @@
     </div>
 </div>
 
-<!-- Archive Page -->
+<!-- Problem Archive Page -->
 <div class="profile-card">
     <div class="profile-header">
-        <h1 class="mb-4">Archive</h1>
+        <h1 class="mb-4">Problem Archive</h1>
     </div>
+
+    <!-- Problem List/Table -->
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
             <tr>
-                <th>№</th>
+                <th>Problem ID</th>
                 <th>Title</th>
                 <th>Difficulty</th>
-                <th>Statement</th>
                 <th>Status</th>
-                <th>Attempts</th>
-                <th>Solved At</th>
+                <th>View Details</th>
             </tr>
             </thead>
-            <tbody id="archive-table-body">
-            <!-- Archive data will be dynamically loaded here -->
+            <tbody id="problem-list">
+            <!-- this will be dynamically filled -->
             </tbody>
         </table>
     </div>
 </div>
 
 <script>
+    async function fetchProblemList() {
+        try {
+            const response = await fetch('/archive-problems');
+            const problems = await response.json();
+
+            const problemListElement = document.getElementById('problem-list');
+            problemListElement.innerHTML = '';
+
+            problems.forEach(problem => {
+                // Get the relevant user problem for user with ID 46
+                const userProblem = problem.userProblems.find(up => up.id.userId === 46); // Change to current user ID
+                const status = userProblem ? userProblem.status : "Unattempted";
+                const attempts = userProblem ? userProblem.attempts : 0;
+                const solvedAt = userProblem && userProblem.solvedAt ? new Date(userProblem.solvedAt).toLocaleString() : null;
+
+                // Create tooltip text
+                const hoverText = solvedAt ? `Attempts: ${attempts}, Solved on: ${solvedAt}` : `Attempts: ${attempts}`;
+
+                const row = document.createElement('tr');
+                const difficultyClass = problem.difficulty.toLowerCase(); // This will match 'easy', 'medium', 'hard'
+
+                row.innerHTML = `
+                    <td>${problem.problemId}</td>
+                    <td>${problem.title}</td>
+                    <td><span class="difficulty ${difficultyClass}">${problem.difficulty}</span></td>
+                    <td class="status-hover" data-hover="${hoverText}">${status}</td>
+                    <td><a href="/archive-problems/problem-description?id=${problem.problemId}" class="view-details-btn">View Details</a></td>
+                `;
+                problemListElement.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Error fetching problem list:", error);
+            alert("Failed to load problem list.");
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchProblemList);
+
     async function logout() {
         try {
             const response = await fetch("/auth/logout", {

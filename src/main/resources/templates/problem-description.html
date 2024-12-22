@@ -1,0 +1,368 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Problem Details</title>-->
+<!--    &lt;!&ndash; WebJars Bootstrap CSS &ndash;&gt;-->
+<!--    <link href="/webjars/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    &lt;!&ndash; WebJars Bootstrap JS &ndash;&gt;-->
+<!--    <script src="/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f4f4f4;-->
+<!--            padding: 20px;-->
+<!--        }-->
+<!--        .profile-card {-->
+<!--            max-width: 800px;-->
+<!--            margin: auto;-->
+<!--            background: #fff;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 20px;-->
+<!--        }-->
+<!--        .profile-header {-->
+<!--            text-align: center;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        .profile-header h1 {-->
+<!--            margin: 0;-->
+<!--        }-->
+<!--        .back-button {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        .problem-box {-->
+<!--            background-color: #f5f5f5;-->
+<!--            padding: 15px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        .problem-box pre {-->
+<!--            background-color: #eee;-->
+<!--            padding: 10px;-->
+<!--            border-radius: 5px;-->
+<!--            font-size: 1rem;-->
+<!--            white-space: pre-wrap;-->
+<!--            word-wrap: break-word;-->
+<!--        }-->
+<!--        .limit-container {-->
+<!--            font-size: 1.2rem;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
+<!--        .limit-container span {-->
+<!--            display: block;-->
+<!--            margin: 5px 0;-->
+<!--        }-->
+<!--        .problem-title {-->
+<!--            font-size: 2rem;-->
+<!--        }-->
+<!--    </style>-->
+<!--    <script>-->
+<!--        async function fetchProblemDetails() {-->
+<!--            try {-->
+<!--                const problemId = new URLSearchParams(window.location.search).get('id');-->
+<!--                const endpoint = `problem-description/${problemId}`;-->
+<!--                const response = await fetch(endpoint);-->
+<!--                const problemData = await response.json();-->
+
+<!--                // Populate the problem details on the page-->
+<!--                document.getElementById('problem-title').innerText = problemData.title;-->
+<!--                document.getElementById('problem-time-limit').innerText = `Time limit: ${problemData.timeLimit} seconds`;-->
+<!--                document.getElementById('problem-memory-limit').innerText = `Memory limit: ${problemData.memoryLimit} MB`;-->
+<!--                document.getElementById('problem-statement').innerText = problemData.statement;-->
+
+<!--                // Populate test cases-->
+<!--                const testContainer = document.getElementById('problem-tests');-->
+<!--                problemData.problemTests.forEach(test => {-->
+<!--                    const testBlock = document.createElement('div');-->
+<!--                    testBlock.classList.add('problem-box');-->
+<!--                    testBlock.innerHTML = `-->
+<!--                        <strong>Input:</strong>-->
+<!--                        <pre>${test.inputData}</pre>-->
+<!--                        <strong>Expected Output:</strong>-->
+<!--                        <pre>${test.expectedOutput}</pre>-->
+<!--                    `;-->
+<!--                    testContainer.appendChild(testBlock);-->
+<!--                });-->
+<!--            } catch (error) {-->
+<!--                console.error("Error fetching problem details:", error);-->
+<!--                alert("Failed to load problem details.");-->
+<!--            }-->
+<!--        }-->
+
+<!--        document.addEventListener('DOMContentLoaded', fetchProblemDetails);-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; Sidebar &ndash;&gt;-->
+<!--<button class="btn btn-primary position-absolute top-0 start-0 m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">-->
+<!--    <span class="navbar-toggler-icon"></span>-->
+<!--</button>-->
+<!--<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">-->
+<!--    <div class="offcanvas-header">-->
+<!--        <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>-->
+<!--        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>-->
+<!--    </div>-->
+<!--    <div class="offcanvas-body">-->
+<!--        <ul class="list-group mb-4">-->
+<!--            <li class="list-group-item"><a href="/profile" class="text-decoration-none">Profile</a></li>-->
+<!--            <li class="list-group-item"><a href="/contest" class="text-decoration-none">Contest</a></li>-->
+<!--            <li class="list-group-item"><a href="/archive" class="text-decoration-none">Archive</a></li>-->
+<!--        </ul>-->
+<!--        <button class="btn btn-danger w-100" onclick="logout()">Log Out</button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Problem Details Page &ndash;&gt;-->
+<!--<div class="profile-card">-->
+<!--    <div class="profile-header">-->
+<!--        <h1 class="problem-title" id="problem-title">Loading...</h1>-->
+<!--        <div class="limit-container">-->
+<!--            <span id="problem-time-limit">Loading...</span>-->
+<!--            <span id="problem-memory-limit">Loading...</span>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="problem-box">-->
+<!--        <pre id="problem-statement">Loading...</pre>-->
+<!--    </div>-->
+
+<!--    <h4>Test Cases</h4>-->
+<!--    <div id="problem-tests">-->
+<!--        &lt;!&ndash; Test cases will be inserted here &ndash;&gt;-->
+<!--    </div>-->
+
+<!--    <button class="btn btn-secondary back-button" onclick="window.history.back()">← Back to Archive</button>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    async function logout() {-->
+<!--        try {-->
+<!--            const response = await fetch("/auth/logout", {-->
+<!--                method: "POST",-->
+<!--                headers: {-->
+<!--                    "Content-Type": "application/json"-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                alert("Logged out successfully!");-->
+<!--                window.location.href = "/login";-->
+<!--            } else {-->
+<!--                alert("Failed to log out!");-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error("Error logging out:", error);-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem Details</title>
+    <!-- WebJars Bootstrap CSS -->
+    <link href="/webjars/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- WebJars Bootstrap JS -->
+    <script src="/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .profile-card {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .profile-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .profile-header h1 {
+            margin: 0;
+        }
+        .difficulty-container {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .difficulty-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        .difficulty-easy {
+            background-color: #28a745; /* Green */
+        }
+        .difficulty-medium {
+            background-color: #ff8c00; /* Orange */
+        }
+        .difficulty-hard {
+            background-color: #dc3545; /* Red */
+        }
+        .back-button {
+            margin-top: 20px;
+        }
+        .problem-box {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .problem-box pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .limit-container {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .limit-container span {
+            display: block;
+            margin: 5px 0;
+        }
+        .problem-title {
+            font-size: 2rem;
+        }
+    </style>
+    <script>
+        async function fetchProblemDetails() {
+            try {
+                const problemId = new URLSearchParams(window.location.search).get('id');
+                const endpoint = `problem-description/${problemId}`;
+                const response = await fetch(endpoint);
+                const problemData = await response.json();
+
+                // Populate the problem details on the page
+                document.getElementById('problem-title').innerText = problemData.title;
+                document.getElementById('problem-time-limit').innerText = `Time limit: ${problemData.timeLimit} seconds`;
+                document.getElementById('problem-memory-limit').innerText = `Memory limit: ${problemData.memoryLimit} MB`;
+                document.getElementById('problem-statement').innerText = problemData.statement;
+
+                // Set the difficulty badge color based on the problem difficulty
+                const difficultyBadge = document.getElementById('difficulty-badge');
+                switch (problemData.difficulty.toLowerCase()) {
+                    case 'easy':
+                        difficultyBadge.classList.add('difficulty-easy');
+                        difficultyBadge.innerText = 'Easy';
+                        break;
+                    case 'medium':
+                        difficultyBadge.classList.add('difficulty-medium');
+                        difficultyBadge.innerText = 'Medium';
+                        break;
+                    case 'hard':
+                        difficultyBadge.classList.add('difficulty-hard');
+                        difficultyBadge.innerText = 'Hard';
+                        break;
+                }
+
+                // Populate test cases
+                const testContainer = document.getElementById('problem-tests');
+                problemData.problemTests.forEach(test => {
+                    const testBlock = document.createElement('div');
+                    testBlock.classList.add('problem-box');
+                    testBlock.innerHTML = `
+                        <strong>Input:</strong>
+                        <pre>${test.inputData}</pre>
+                        <strong>Expected Output:</strong>
+                        <pre>${test.expectedOutput}</pre>
+                    `;
+                    testContainer.appendChild(testBlock);
+                });
+            } catch (error) {
+                console.error("Error fetching problem details:", error);
+                alert("Failed to load problem details.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchProblemDetails);
+    </script>
+</head>
+<body>
+<!-- Sidebar -->
+<button class="btn btn-primary position-absolute top-0 start-0 m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+    <span class="navbar-toggler-icon"></span>
+</button>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="list-group mb-4">
+            <li class="list-group-item"><a href="/profile" class="text-decoration-none">Profile</a></li>
+            <li class="list-group-item"><a href="/contest" class="text-decoration-none">Contest</a></li>
+            <li class="list-group-item"><a href="/archive" class="text-decoration-none">Archive</a></li>
+        </ul>
+        <button class="btn btn-danger w-100" onclick="logout()">Log Out</button>
+    </div>
+</div>
+
+<!-- Problem Details Page -->
+<div class="profile-card">
+    <div class="profile-header">
+        <h1 class="problem-title" id="problem-title">Loading...</h1>
+        <div class="difficulty-container">
+            <div id="difficulty-badge" class="difficulty-badge">Loading...</div>
+        </div>
+    </div>
+
+    <div class="limit-container">
+        <span id="problem-time-limit">Loading...</span>
+        <span id="problem-memory-limit">Loading...</span>
+    </div>
+
+    <div class="problem-box">
+        <pre id="problem-statement">Loading...</pre>
+    </div>
+
+    <h4>Test Cases</h4>
+    <div id="problem-tests">
+        <!-- Test cases will be inserted here -->
+    </div>
+
+    <button class="btn btn-secondary back-button" onclick="window.history.back()">← Back to Archive</button>
+</div>
+
+<script>
+    async function logout() {
+        try {
+            const response = await fetch("/auth/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.ok) {
+                alert("Logged out successfully!");
+                window.location.href = "/login";
+            } else {
+                alert("Failed to log out!");
+            }
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    }
+</script>
+</body>
+</html>
+
+

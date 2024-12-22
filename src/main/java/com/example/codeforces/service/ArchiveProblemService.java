@@ -1,6 +1,7 @@
 package com.example.codeforces.service;
 
 import com.example.codeforces.db.ArchiveProblem;
+import com.example.codeforces.db.ArchiveProblemDetailDTO;
 import com.example.codeforces.repository.ArchiveProblemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,11 @@ public class ArchiveProblemService {
     // Get a specific problem by ID
     public Optional<ArchiveProblem> getProblemById(Long id) {
         return archiveProblemRepository.findById(id);
+    }
+
+    // Get a detailed description as DTO
+    public Optional<ArchiveProblemDetailDTO> getDetailedProblemById(Long id) {
+        return archiveProblemRepository.findById(id)
+                .map(ArchiveProblemDetailDTO::fromEntity);
     }
 }
