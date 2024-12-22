@@ -48,7 +48,7 @@ public class ArchiveProblemController {
     }
 
 
-    @GetMapping("/aboba/{id}")
+    @DeleteMapping("/aboba/{id}")
     public ResponseEntity<Void> deleteArchiveProblem(@PathVariable Long id) {
         if (archiveProblemService.deleteArchiveProblem(id)) {
             return ResponseEntity.noContent().build();

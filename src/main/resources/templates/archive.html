@@ -146,6 +146,10 @@
 <script>
     async function fetchProblemList() {
         try {
+            // const user = { role: { roleName: 'USER' } }; // Example role; replace with actual user role data
+            const userResponse = await fetch('/auth/user');
+            const user = await userResponse.json();
+
             const response = await fetch('/archive-problems');
             const problems = await response.json();
 
@@ -153,30 +157,58 @@
             problemListElement.innerHTML = '';
 
             problems.forEach(problem => {
-                // Get the relevant user problem for user with ID 46
                 const userProblem = problem.userProblems.find(up => up.id.userId === 46); // Change to current user ID
                 const status = userProblem ? userProblem.status : "Unattempted";
                 const attempts = userProblem ? userProblem.attempts : 0;
                 const solvedAt = userProblem && userProblem.solvedAt ? new Date(userProblem.solvedAt).toLocaleString() : null;
 
-                // Create tooltip text
                 const hoverText = solvedAt ? `Attempts: ${attempts}, Solved on: ${solvedAt}` : `Attempts: ${attempts}`;
 
                 const row = document.createElement('tr');
-                const difficultyClass = problem.difficulty.toLowerCase(); // This will match 'easy', 'medium', 'hard'
+                const difficultyClass = problem.difficulty.toLowerCase();
 
                 row.innerHTML = `
                     <td>${problem.problemId}</td>
                     <td>${problem.title}</td>
                     <td><span class="difficulty ${difficultyClass}">${problem.difficulty}</span></td>
                     <td class="status-hover" data-hover="${hoverText}">${status}</td>
-                    <td><a href="/archive-problems/problem-description?id=${problem.problemId}" class="view-details-btn">View Details</a></td>
+                    <td>
+                        <a href="/archive-problems/problem-description?id=${problem.problemId}" class="view-details-btn">View Details</a>
+                        ${user.user.role.roleName === 'ADMIN' ? `<button class="btn btn-danger btn-sm ms-2 delete-btn" data-id="${problem.problemId}">&times;</button>` : ''}
+                    </td>
                 `;
+
                 problemListElement.appendChild(row);
             });
+
+            if (user.user.role.roleName === 'ADMIN') {
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', async (event) => {
+                        const problemId = event.target.getAttribute('data-id');
+                        await deleteProblem(problemId);
+                    });
+                });
+            }
         } catch (error) {
             console.error("Error fetching problem list:", error);
             alert("Failed to load problem list.");
+        }
+    }
+
+    async function deleteProblem(problemId) {
+        try {
+            const response = await fetch(`/archive-problems/aboba/${problemId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert(`Problem ${problemId} deleted successfully.`);
+                fetchProblemList(); // Refresh the list
+            } else {
+                alert(`Failed to delete problem ${problemId}.`);
+            }
+        } catch (error) {
+            console.error("Error deleting problem:", error);
         }
     }
 
