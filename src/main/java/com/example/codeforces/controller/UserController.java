@@ -19,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -117,18 +119,38 @@ public class UserController {
         }
     }
 
-    @PostMapping("/admin/backup")
-    public ResponseEntity<String> uploadBackup(@RequestParam("backupFile") MultipartFile backupFile) {
-        if (backupFile.isEmpty()) {
-            return ResponseEntity.badRequest().body("Backup file is empty.");
-        }
-
-        try {
-            backupService.restoreFromBackupFile(backupFile);
-            return ResponseEntity.ok("Backup restored successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to restore backup: " + e.getMessage());
-        }
+//    @PostMapping("/admin/backup")
+//    public ResponseEntity<String> uploadBackup(@RequestParam("backupFile") MultipartFile backupFile) {
+//        if (backupFile.isEmpty()) {
+//            return ResponseEntity.badRequest().body("Backup file is empty.");
+//        }
+//
+//        try {
+//            backupService.restoreFromBackupFile(backupFile);
+//            return ResponseEntity.ok("Backup restored successfully.");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to restore backup: " + e.getMessage());
+//        }
+//    }
+@PostMapping("/admin/backup")
+public ResponseEntity<Map<String, String>> uploadBackup(@RequestParam("backupFile") MultipartFile backupFile) {
+    if (backupFile.isEmpty()) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Backup file is empty.");
+        return ResponseEntity.badRequest().body(response);
     }
+
+    try {
+        backupService.restoreFromBackupFile(backupFile);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Backup restored successfully.");
+        return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Failed to restore backup: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+}
+
 }

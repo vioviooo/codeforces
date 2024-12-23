@@ -146,6 +146,43 @@
 <div id="admin-backup-container"></div>
 
 <script>
+    // async function checkAdminRoleAndRenderBackup() {
+    //     try {
+    //         // Fetch user data
+    //         const userResponse = await fetch('/auth/user');
+    //         const user = await userResponse.json();
+    //
+    //         // Check if the user's role is ADMIN
+    //         if (user.user.role.roleName === 'ADMIN') {
+    //             const adminBackupContainer = document.getElementById('admin-backup-container');
+    //             adminBackupContainer.innerHTML = `
+    //                 <div class="card mt-4 p-3">
+    //                     <h2 class="text-center fs-5">Backup copy</h2>
+    //                     <div class="text-center">
+    //                         <a href="/users/admin/backup" class="btn btn-primary btn-lg">
+    //                             <span>Download</span>
+    //                         </a>
+    //                     </div>
+    //                 </div>
+    //                 <div class="card mt-4 p-3">
+    //                     <h2 class="text-center fs-5">Upload backup copy</h2>
+    //                     <form action="/users/admin/backup" method="post" enctype="multipart/form-data" class="text-center">
+    //                         <div class="row justify-content-center mb-3">
+    //                             <div class="col-md-6">
+    //                                 <label for="backupFile" class="form-label"></label>
+    //                                 <input name="backupFile" id="backupFile" type="file" class="form-control" accept=".bak" required>
+    //                             </div>
+    //                         </div>
+    //                         <button type="submit" class="btn btn-success btn-lg">Upload</button>
+    //                     </form>
+    //                 </div>
+    //             `;
+    //         }
+    //     } catch (error) {
+    //         console.error("Error checking admin role:", error);
+    //     }
+    // }
+
     async function checkAdminRoleAndRenderBackup() {
         try {
             // Fetch user data
@@ -154,30 +191,60 @@
 
             // Check if the user's role is ADMIN
             if (user.user.role.roleName === 'ADMIN') {
-                // Insert the admin-specific backup HTML
                 const adminBackupContainer = document.getElementById('admin-backup-container');
                 adminBackupContainer.innerHTML = `
-                    <div class="card mt-4 p-3">
-                        <h2 class="text-center fs-5">Backup copy</h2>
-                        <div class="text-center">
-                            <a href="/users/admin/backup" class="btn btn-primary btn-lg">
-                                <span>Download</span>
-                            </a>
-                        </div>
+                <div class="card mt-4 p-3">
+                    <h2 class="text-center fs-5">Backup copy</h2>
+                    <div class="text-center">
+                        <a href="/users/admin/backup" class="btn btn-primary btn-lg">
+                            <span>Download</span>
+                        </a>
                     </div>
-                    <div class="card mt-4 p-3">
-                        <h2 class="text-center fs-5">Upload backup copy</h2>
-                        <form action="/users/admin/backup" method="post" enctype="multipart/form-data" class="text-center">
-                            <div class="row justify-content-center mb-3">
-                                <div class="col-md-6">
-                                    <label for="backupFile" class="form-label"></label>
-                                    <input name="backupFile" id="backupFile" type="file" class="form-control" required>
-                                </div>
+                </div>
+                <div class="card mt-4 p-3">
+                    <h2 class="text-center fs-5">Upload backup copy</h2>
+                    <form id="backupForm" enctype="multipart/form-data" class="text-center">
+                        <div class="row justify-content-center mb-3">
+                            <div class="col-md-6">
+                                <label for="backupFile" class="form-label">Select Backup File</label>
+                                <input name="backupFile" id="backupFile" type="file" class="form-control" accept=".bak" required>
                             </div>
-                            <button type="submit" class="btn btn-success btn-lg">Upload</button>
-                        </form>
-                    </div>
-                `;
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg">Upload</button>
+                    </form>
+                </div>
+            `;
+
+                // Handle form submission for file upload
+                document.getElementById('backupForm').addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const formData = new FormData();
+                    formData.append('backupFile', document.getElementById('backupFile').files[0]);
+
+                    try {
+                        const response = await fetch('/users/admin/backup', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const result = await response.json();
+                        const alertMessage = result.message || "Backup restored successfully!";
+                        const alertType = response.ok ? "success" : "danger";
+
+                        const alertDiv = document.createElement('div');
+                        alertDiv.classList.add('alert', `alert-${alertType}`, 'mt-3');
+                        alertDiv.textContent = alertMessage;
+
+                        adminBackupContainer.appendChild(alertDiv);
+                    } catch (error) {
+                        console.error("Error uploading backup:", error);
+                        const alertDiv = document.createElement('div');
+                        alertDiv.classList.add('alert', 'alert-danger', 'mt-3');
+                        alertDiv.textContent = "Failed to upload backup!";
+                        adminBackupContainer.appendChild(alertDiv);
+                    }
+                });
             }
         } catch (error) {
             console.error("Error checking admin role:", error);
@@ -210,74 +277,4 @@
     }
 </script>
 </body>
-<!--<body>-->
-<!--&lt;!&ndash; Sidebar &ndash;&gt;-->
-<!--<button class="btn btn-primary position-absolute top-0 start-0 m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">-->
-<!--    Menu-->
-<!--</button>-->
-<!--<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">-->
-<!--    <div class="offcanvas-header">-->
-<!--        <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>-->
-<!--        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>-->
-<!--    </div>-->
-<!--    <div class="offcanvas-body">-->
-<!--        <ul class="list-group mb-4">-->
-<!--            <li class="list-group-item"><a href="/profile" class="text-decoration-none">Profile</a></li>-->
-<!--            <li class="list-group-item"><a href="/contest" class="text-decoration-none">Contest</a></li>-->
-<!--            <li class="list-group-item"><a href="/archive" class="text-decoration-none">Archive</a></li>-->
-<!--        </ul>-->
-<!--        <button class="btn btn-danger w-100" onclick="logout()">Log Out</button>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Profile Card &ndash;&gt;-->
-<!--<div class="profile-card">-->
-<!--    <div class="profile-header">-->
-<!--        <img id="profile-picture" src="https://via.placeholder.com/100" alt="Profile Picture">-->
-<!--        <h3 id="username">Loading...</h3>-->
-<!--    </div>-->
-<!--    <table class="table">-->
-<!--        <tbody>-->
-<!--        <tr>-->
-<!--            <th scope="row">Email:</th>-->
-<!--            <td id="email">Loading...</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th scope="row">Role:</th>-->
-<!--            <td id="role">Loading...</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th scope="row">Joined Date:</th>-->
-<!--            <td id="joined-date">Loading...</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th scope="row">Contests Attended:</th>-->
-<!--            <td id="contests-attended">Loading...</td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
-
-<!--<script>-->
-<!--    async function logout() {-->
-<!--        try {-->
-<!--            const response = await fetch("/auth/logout", {-->
-<!--                method: "POST",-->
-<!--                headers: {-->
-<!--                    "Content-Type": "application/json"-->
-<!--                }-->
-<!--            });-->
-
-<!--            if (response.ok) {-->
-<!--                alert("Logged out successfully!");-->
-<!--                window.location.href = "/login";-->
-<!--            } else {-->
-<!--                alert("Failed to log out!");-->
-<!--            }-->
-<!--        } catch (error) {-->
-<!--            console.error("Error logging out:", error);-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
-<!--</body>-->
 </html>
