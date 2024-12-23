@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contests</title>
-  <!-- WebJars Bootstrap CSS -->
   <link href="/webjars/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
-  <!-- WebJars Bootstrap JS -->
   <script src="/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
   <style>
     body {
@@ -34,9 +32,28 @@
     .profile-header h3 {
       margin: 0;
     }
+    th {
+      text-align: center;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
   </style>
   <script>
     let showAllContests = true;
+    let userRole = ''; // Will hold the current user's role
+    let currentContestId = null; // Variable to store the current contest ID for editing
+
+    async function fetchUserRole() {
+      try {
+        const response = await fetch('/auth/user');
+        const user = await response.json();
+        userRole = user.user.role.roleName; // Assuming the role is in this structure
+        fetchContests(); // Fetch contests after getting the role
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+      }
+    }
 
     async function fetchContests() {
       try {
@@ -50,20 +67,26 @@
         contests.forEach(contest => {
           const row = document.createElement('tr');
 
+          // Conditionally render the edit button based on the user's role
+          const editButton = (userRole === 'ADMIN' || userRole === 'MANAGER') ? `
+                    <td><button class="btn btn-warning" onclick="editContest(${contest.contestId}, '${contest.name}', '${contest.startTime}', ${contest.duration}, '${contest.difficulty}')">Edit</button></td>
+                ` : `<td></td>`; // Empty if not admin or manager
+
           row.innerHTML = `
-                        <td>${contest.contestId}</td>
-                        <td>${contest.name}</td>
-                        <td>${formatDate(contest.startTime)}</td>
-                        <td>${contest.duration}</td>
-                        <td>${contest.difficulty}</td>
-                    `;
+                    <td>${contest.contestId}</td>
+                    <td>${contest.name}</td>
+                    <td>${formatDate(contest.startTime)}</td>
+                    <td>${contest.duration}</td>
+                    <td>${contest.difficulty}</td>
+                    ${editButton}
+                `;
 
           tableBody.appendChild(row);
         });
       } catch (error) {
         console.error("Error fetching contests:", error);
         const tableBody = document.getElementById('contest-table-body');
-        tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Failed to load contests.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Failed to load contests.</td></tr>`;
       }
     }
 
@@ -88,7 +111,84 @@
       fetchContests();
     }
 
-    document.addEventListener('DOMContentLoaded', fetchContests);
+    document.addEventListener('DOMContentLoaded', fetchUserRole);
+
+    // Handle the 'Edit' button click
+    function editContest(contestId, name, startTime, duration, difficulty) {
+      currentContestId = contestId;
+      // Populate modal with existing contest data
+      document.getElementById('contestName').value = name;
+      document.getElementById('startTime').value = startTime.slice(0, 16); // Adjust for input datetime format
+      document.getElementById('duration').value = duration;
+      document.getElementById('difficulty').value = difficulty;
+
+      // Show the modal
+      const updateContestButton = document.getElementById('updateContestButton');
+      updateContestButton.onclick = () => updateContest(); // Set the update button to call updateContest
+      const updateModal = new bootstrap.Modal(document.getElementById('updateContestModal'));
+      updateModal.show();
+    }
+
+    // Function to update the contest
+    async function updateContest() {
+      const updatedContest = {
+        name: document.getElementById('contestName').value,
+        startTime: document.getElementById('startTime').value,
+        duration: document.getElementById('duration').value,
+        difficulty: document.getElementById('difficulty').value
+      };
+
+      try {
+        const response = await fetch(`/contests/${currentContestId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedContest)
+        });
+
+        if (response.ok) {
+          alert('Contest updated successfully!');
+          fetchContests();
+
+          const updateModalElement = document.getElementById('updateContestModal');
+          const updateModal = bootstrap.Modal.getInstance(updateModalElement);
+
+          const fallbackFocus = document.getElementById('someButtonOutsideModal') || document.body;
+          fallbackFocus.focus();
+
+          updateModal.hide();
+
+          updateModalElement.setAttribute('aria-hidden', 'false');
+        } else {
+          alert('Failed to update contest!');
+        }
+      } catch (error) {
+        console.error("Error updating contest:", error);
+        alert('Error updating contest!');
+      }
+    }
+
+    async function logout() {
+      try {
+        const response = await fetch("/auth/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (response.ok) {
+          alert("Logged out successfully!");
+          window.location.href = "/login";
+        } else {
+          alert("Failed to log out!");
+        }
+      } catch (error) {
+        console.error("Error logging out:", error);
+        alert("Error logging out!");
+      }
+    }
   </script>
 </head>
 <body>
@@ -126,6 +226,7 @@
         <th>Start Time (MSK)</th>
         <th>Duration (minutes)</th>
         <th>Difficulty</th>
+        <th>Edit</th> <!-- Added Edit column header -->
       </tr>
       </thead>
       <tbody id="contest-table-body">
@@ -135,26 +236,38 @@
   </div>
 </div>
 
-<script>
-  async function logout() {
-    try {
-      const response = await fetch("/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-
-      if (response.ok) {
-        alert("Logged out successfully!");
-        window.location.href = "/login";
-      } else {
-        alert("Failed to log out!");
-      }
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  }
-</script>
+<!-- Modal for Updating Contest -->
+<div class="modal fade" id="updateContestModal" tabindex="-1" aria-labelledby="updateContestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateContestModalLabel">Update Contest</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="contestName" class="form-label">Contest Name</label>
+          <input type="text" class="form-control" id="contestName">
+        </div>
+        <div class="mb-3">
+          <label for="startTime" class="form-label">Start Time (MSK)</label>
+          <input type="datetime-local" class="form-control" id="startTime">
+        </div>
+        <div class="mb-3">
+          <label for="duration" class="form-label">Duration (minutes)</label>
+          <input type="number" class="form-control" id="duration">
+        </div>
+        <div class="mb-3">
+          <label for="difficulty" class="form-label">Difficulty</label>
+          <input type="text" class="form-control" id="difficulty">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="updateContestButton">Update Contest</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

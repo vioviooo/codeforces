@@ -2,6 +2,7 @@ package com.example.codeforces.controller;
 
 import com.example.codeforces.db.ArchiveProblem;
 import com.example.codeforces.db.ArchiveProblemDetailDTO;
+import com.example.codeforces.db.ProblemTest;
 import com.example.codeforces.service.ArchiveProblemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,22 +18,18 @@ public class ArchiveProblemController {
     @Autowired
     private ArchiveProblemService archiveProblemService;
 
-    // 1. Add a new problem
     @PostMapping
     public ResponseEntity<ArchiveProblem> addProblem(@RequestBody ArchiveProblem archiveProblem) {
         ArchiveProblem savedProblem = archiveProblemService.addProblem(archiveProblem);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProblem);
     }
 
-    // 2. Get all problems
     @GetMapping
     public ResponseEntity<List<ArchiveProblem>> getAllProblems() {
-        System.out.print("\n WELL I DO ACTUALLY WORK \n");
         List<ArchiveProblem> problems = archiveProblemService.getAllProblems();
         return ResponseEntity.ok(problems);
     }
 
-    // 3. Get a specific problem by ID
     @GetMapping("/{id}")
     public ResponseEntity<ArchiveProblem> getProblemById(@PathVariable Long id) {
         return archiveProblemService.getProblemById(id)
@@ -54,5 +51,14 @@ public class ArchiveProblemController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/add-test")
+    public ResponseEntity<Void> addProblemTest(@PathVariable Long id, @RequestBody ProblemTest test) {
+        boolean success = archiveProblemService.addProblemTest(id, test);
+        if (success) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

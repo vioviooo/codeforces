@@ -2,6 +2,7 @@ package com.example.codeforces.service;
 
 import com.example.codeforces.db.ArchiveProblem;
 import com.example.codeforces.db.ArchiveProblemDetailDTO;
+import com.example.codeforces.db.ProblemTest;
 import com.example.codeforces.repository.ArchiveProblemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,17 @@ public class ArchiveProblemService {
     // Add a new problem
     public ArchiveProblem addProblem(ArchiveProblem archiveProblem) {
         return archiveProblemRepository.save(archiveProblem);
+    }
+
+    public boolean addProblemTest(Long problemId, ProblemTest problemTest) {
+        Optional<ArchiveProblem> problemOptional = archiveProblemRepository.findById(problemId);
+        if (problemOptional.isPresent()) {
+            ArchiveProblem problem = problemOptional.get();
+            problem.getProblemTests().add(problemTest);
+            archiveProblemRepository.save(problem);
+            return true;
+        }
+        return false;
     }
 
     // Get all problems

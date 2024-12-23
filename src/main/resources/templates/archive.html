@@ -142,11 +142,100 @@
         </table>
     </div>
 </div>
-
+<!-- Add Problem Button -->
+<div class="text-center my-3">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProblemModal">Add New Problem</button>
+</div>
+<!-- Add Problem Modal -->
+<div class="modal fade" id="addProblemModal" tabindex="-1" aria-labelledby="addProblemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProblemModalLabel">Create New Problem</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addProblemForm">
+                    <div class="mb-3">
+                        <label for="problemTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="problemTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="problemDifficulty" class="form-label">Difficulty</label>
+                        <select class="form-select" id="problemDifficulty" required>
+                            <option value="" selected disabled>Select Difficulty</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="problemStatement" class="form-label">Statement</label>
+                        <textarea class="form-control" id="problemStatement" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="timeLimit" class="form-label">Time Limit (seconds)</label>
+                        <input type="number" class="form-control" id="timeLimit" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="memoryLimit" class="form-label">Memory Limit (MB)</label>
+                        <input type="number" class="form-control" id="memoryLimit" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addNewProblem()">Save Problem</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    async function addNewProblem() {
+        const title = document.getElementById('problemTitle').value;
+        const difficulty = document.getElementById('problemDifficulty').value;
+        const statement = document.getElementById('problemStatement').value;
+        const timeLimit = document.getElementById('timeLimit').value;
+        const memoryLimit = document.getElementById('memoryLimit').value;
+
+        if (!title || !difficulty || !statement || !timeLimit || !memoryLimit) {
+            alert("All fields are required!");
+            return;
+        }
+
+        const newProblem = {
+            title,
+            difficulty,
+            statement,
+            timeLimit: parseInt(timeLimit, 10),
+            memoryLimit: parseInt(memoryLimit, 10)
+        };
+
+        try {
+            const response = await fetch('/archive-problems', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newProblem),
+            });
+
+            if (response.ok) {
+                alert("Problem created successfully!");
+                fetchProblemList(); // Refresh the list
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addProblemModal'));
+                modal.hide();
+            } else {
+                alert("Failed to create problem!");
+            }
+        } catch (error) {
+            console.error("Error creating problem:", error);
+            alert("Error occurred while creating the problem!");
+        }
+    }
+
     async function fetchProblemList() {
         try {
-            // const user = { role: { roleName: 'USER' } }; // Example role; replace with actual user role data
             const userResponse = await fetch('/auth/user');
             const user = await userResponse.json();
 
