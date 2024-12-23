@@ -67,7 +67,6 @@
         contests.forEach(contest => {
           const row = document.createElement('tr');
 
-          // Conditionally render the edit button based on the user's role
           const editButton = (userRole === 'ADMIN' || userRole === 'MANAGER') ? `
                     <td><button class="btn btn-warning" onclick="editContest(${contest.contestId}, '${contest.name}', '${contest.startTime}', ${contest.duration}, '${contest.difficulty}')">Edit</button></td>
                 ` : `<td></td>`; // Empty if not admin or manager
@@ -154,12 +153,13 @@
           const updateModalElement = document.getElementById('updateContestModal');
           const updateModal = bootstrap.Modal.getInstance(updateModalElement);
 
-          const fallbackFocus = document.getElementById('someButtonOutsideModal') || document.body;
-          fallbackFocus.focus();
-
+          updateModalElement.removeAttribute('aria-hidden');
           updateModal.hide();
 
-          updateModalElement.setAttribute('aria-hidden', 'false');
+          const editButton = document.querySelector(`button[onclick="editContest(${currentContestId}, '${updatedContest.name}', '${updatedContest.startTime}', ${updatedContest.duration}, '${updatedContest.difficulty}')"]`);
+          if (editButton) {
+            editButton.focus();
+          }
         } else {
           alert('Failed to update contest!');
         }

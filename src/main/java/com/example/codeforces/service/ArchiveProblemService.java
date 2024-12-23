@@ -22,11 +22,13 @@ public class ArchiveProblemService {
     }
 
     public boolean addProblemTest(Long problemId, ProblemTest problemTest) {
+        System.out.print("\nHERE IS PROBLEM ID: " + problemId + '\n');
         Optional<ArchiveProblem> problemOptional = archiveProblemRepository.findById(problemId);
         if (problemOptional.isPresent()) {
             ArchiveProblem problem = problemOptional.get();
+            problemTest.setProblem(problem); // Set the problem reference
             problem.getProblemTests().add(problemTest);
-            archiveProblemRepository.save(problem);
+            archiveProblemRepository.save(problem); // Persist the updated problem
             return true;
         }
         return false;

@@ -3,6 +3,7 @@ package com.example.codeforces.controller;
 import com.example.codeforces.db.ArchiveProblem;
 import com.example.codeforces.db.ArchiveProblemDetailDTO;
 import com.example.codeforces.db.ProblemTest;
+import com.example.codeforces.repository.ArchiveProblemRepository;
 import com.example.codeforces.service.ArchiveProblemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/archive-problems")
@@ -17,6 +19,8 @@ public class ArchiveProblemController {
 
     @Autowired
     private ArchiveProblemService archiveProblemService;
+    @Autowired
+    private ArchiveProblemRepository archiveProblemRepository;
 
     @PostMapping
     public ResponseEntity<ArchiveProblem> addProblem(@RequestBody ArchiveProblem archiveProblem) {
@@ -53,7 +57,7 @@ public class ArchiveProblemController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{id}/add-test")
+    @PostMapping("/problem-description/{id}/add-test")
     public ResponseEntity<Void> addProblemTest(@PathVariable Long id, @RequestBody ProblemTest test) {
         boolean success = archiveProblemService.addProblemTest(id, test);
         if (success) {
