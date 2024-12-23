@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/register", "/auth/login", "/register", "/login").permitAll()
                         .requestMatchers("/main", "/profile", "/contest", "/archive", "/archive_problems", "/problem-description").authenticated()
                         .requestMatchers("/archive-problems/aboba/**").hasRole("ADMIN")
+                        .requestMatchers("/users/admin/**").hasRole("ADMIN") // для бэкапа
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

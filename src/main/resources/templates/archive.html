@@ -143,9 +143,10 @@
     </div>
 </div>
 <!-- Add Problem Button -->
-<div class="text-center my-3">
+<div class="text-center my-3" id="add-problem-section" style="display: none;">
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProblemModal">Add New Problem</button>
 </div>
+
 <!-- Add Problem Modal -->
 <div class="modal fade" id="addProblemModal" tabindex="-1" aria-labelledby="addProblemModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -236,8 +237,14 @@
 
     async function fetchProblemList() {
         try {
+            // Fetch user details to get the role
             const userResponse = await fetch('/auth/user');
             const user = await userResponse.json();
+
+            // Show "Add New Problem" button if the user is ADMIN or MANAGER
+            if (['ADMIN', 'MANAGER'].includes(user.user.role.roleName)) {
+                document.getElementById('add-problem-section').style.display = 'block';
+            }
 
             const response = await fetch('/archive-problems');
             const problems = await response.json();
@@ -257,15 +264,15 @@
                 const difficultyClass = problem.difficulty.toLowerCase();
 
                 row.innerHTML = `
-                    <td>${problem.problemId}</td>
-                    <td>${problem.title}</td>
-                    <td><span class="difficulty ${difficultyClass}">${problem.difficulty}</span></td>
-                    <td class="status-hover" data-hover="${hoverText}">${status}</td>
-                    <td>
-                        <a href="/archive-problems/problem-description?id=${problem.problemId}" class="view-details-btn">View Details</a>
-                        ${user.user.role.roleName === 'ADMIN' ? `<button class="btn btn-danger btn-sm ms-2 delete-btn" data-id="${problem.problemId}">&times;</button>` : ''}
-                    </td>
-                `;
+                <td>${problem.problemId}</td>
+                <td>${problem.title}</td>
+                <td><span class="difficulty ${difficultyClass}">${problem.difficulty}</span></td>
+                <td class="status-hover" data-hover="${hoverText}">${status}</td>
+                <td>
+                    <a href="/archive-problems/problem-description?id=${problem.problemId}" class="view-details-btn">View Details</a>
+                    ${user.user.role.roleName === 'ADMIN' ? `<button class="btn btn-danger btn-sm ms-2 delete-btn" data-id="${problem.problemId}">&times;</button>` : ''}
+                </td>
+            `;
 
                 problemListElement.appendChild(row);
             });

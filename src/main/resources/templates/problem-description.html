@@ -440,7 +440,6 @@
                     testContainer.appendChild(testBlock);
                 });
 
-                // Show the "Add Test Case" button for ADMIN or MANAGER only
                 if (user.user.role.roleName === 'ADMIN' || user.user.role.roleName === 'MANAGER') {
                     const addTestButton = document.querySelector('.btn-primary.my-3');
                     addTestButton.style.display = 'block'; // Show the button
