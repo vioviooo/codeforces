@@ -1,32 +1,3 @@
-//package com.example.codeforces.db;
-//
-//import com.fasterxml.jackson.annotation.JsonBackReference;
-//import jakarta.persistence.*;
-//
-//import java.time.LocalDateTime;
-//
-//@Entity
-//@Table(name = "user_problems")
-//public class UserProblem {
-//    @EmbeddedId
-//    private UserProblemId id;
-//
-//    @ManyToOne
-//    @MapsId("userId")
-//    @JsonBackReference
-//    private User user;
-//
-//    @ManyToOne
-//    @MapsId("problemId")
-//    @JsonBackReference
-//    private ArchiveProblem problem;
-//
-//    private String status;
-//    private Integer attempts;
-//    private LocalDateTime solvedAt;
-//
-//    // Getters, Setters, Constructors
-//}
 package com.example.codeforces.db;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
