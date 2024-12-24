@@ -71,31 +71,16 @@ public class AuthController {
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.status(401).build());
     }
 
-//    @GetMapping("/user")
-//    public ResponseEntity<User> getUserInfo() {
-////        System.out.print("GETTING USER INFO!");
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == "anonymousUser") {
-//            return ResponseEntity.status(401).build();
-//        }
-//
-//        String username = authentication.getName();
-//        Optional<User> user = userRepository.findByUsername(username);
-//        return user.map(ResponseEntity::ok).orElse(ResponseEntity.status(404).build());
-//    }
-
     @GetMapping("/user")
     public ResponseEntity<Map<String, Object>> getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Check if the user is authenticated and not anonymous
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
             return ResponseEntity.status(401).build();  // Unauthorized response if not authenticated
         }
 
         String username = authentication.getName();  // Get the username from authentication context
 
-        // Fetch the user from the repository
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (!userOptional.isPresent()) {
             return ResponseEntity.status(404).build();  // Return 404 if user not found
@@ -103,11 +88,9 @@ public class AuthController {
 
         User user = userOptional.get();
 
-        // Get the contest count using the custom SQL function
         Integer contestsCount = jdbcTemplate.queryForObject(
                 "SELECT count_user_contests(?)", Integer.class, username);
 
-        // Prepare the response map with user info and contest count
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);
         response.put("contestsCount", contestsCount);

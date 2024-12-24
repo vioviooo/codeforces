@@ -253,7 +253,7 @@
             problemListElement.innerHTML = '';
 
             problems.forEach(problem => {
-                const userProblem = problem.userProblems.find(up => up.id.userId === 46); // Change to current user ID
+                const userProblem = problem.userProblems.find(up => up.id.userId === user.user.userId);
                 const status = userProblem ? userProblem.status : "Unattempted";
                 const attempts = userProblem ? userProblem.attempts : 0;
                 const solvedAt = userProblem && userProblem.solvedAt ? new Date(userProblem.solvedAt).toLocaleString() : null;
