@@ -49,8 +49,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<User> login(HttpServletRequest request, @RequestBody Map<String, String> credentials) {
-        System.out.println("Login attempt: " + credentials + '\n');
-        System.out.print(BCrypt.hashpw("42", BCrypt.gensalt()));
 
         Optional<User> user = userService.login(credentials.get("username"), credentials.get("password"));
 
