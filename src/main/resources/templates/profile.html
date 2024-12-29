@@ -104,16 +104,13 @@
 
             const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=random&color=fff&size=100`;
 
-            // Set the profile picture or use a default avatar
             document.getElementById("profile-picture").src = user.profilePicture || avatarUrl;
 
-            // Set user details
             document.getElementById("username").innerText = user.username || "Unknown";
             document.getElementById("email").innerText = user.email || "Not provided";
             document.getElementById("role").innerText = user.role?.roleName || "User";
             document.getElementById("joined-date").innerText = formatDate(user.registrationDate) || "Unknown"; // Use formatted date
 
-            // Set contests attended count (this will be based on the contestsCount field)
             document.getElementById("contests-attended").innerText = contestsCount || "0";
         }
 

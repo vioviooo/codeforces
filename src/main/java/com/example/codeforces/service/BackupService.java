@@ -59,7 +59,6 @@ public class BackupService {
                 throw new RuntimeException(e);
             }
         }
-        // TODO: append date to log
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("docker", "exec", containerName,
@@ -70,10 +69,7 @@ public class BackupService {
                     .start()
                     .waitFor();
 
-//      throw new IOException("123");
-
         } catch (IOException e) {
-            // TODO: something
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -87,8 +83,7 @@ public class BackupService {
             Files.copy(file, outputStream);
             outputStream.flush();
         } catch (IOException e) {
-//      LOG.info("Error writing file to output stream. Filename was '{}'" + fileName, e);
-//      throw new RuntimeException("IOError writing file to output stream");
+            throw new RuntimeException("IOError writing file to output stream");
         }
     }
 
@@ -101,17 +96,13 @@ public class BackupService {
             Files.copy(backupFile.getInputStream(), file);
         } catch (IOException e) {
             log.info("!!!", e);
-//      LOG.info("Error writing file to output stream. Filename was '{}'" + fileName, e);
-//      throw new RuntimeException("IOError writing file to output stream");
+            throw new RuntimeException("IOError writing file to output stream");
         }
-
-        // TODO: append date to log file
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("docker", "cp", backupPath,
                     containerName + ":" + remoteBackupPath);
             processBuilder
-                    .redirectErrorStream(true)
                     .redirectError(ProcessBuilder.Redirect.appendTo(new File(backupLogPath)))
                     .redirectOutput(ProcessBuilder.Redirect.appendTo(new File(backupLogPath)))
                     .start()
@@ -126,7 +117,6 @@ public class BackupService {
             ProcessBuilder processBuilder = new ProcessBuilder("docker", "exec", containerName,
                     "pg_restore", "-U", dbUser, "--clean", "-d", dbName, remoteBackupPath);
             processBuilder
-                    .redirectErrorStream(true)
                     .redirectError(ProcessBuilder.Redirect.appendTo(new File(backupLogPath)))
                     .redirectOutput(ProcessBuilder.Redirect.appendTo(new File(backupLogPath)))
                     .start()

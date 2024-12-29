@@ -1,10 +1,9 @@
 package com.example.codeforces.db;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -15,6 +14,10 @@ public class Role {
     private Long roleId;
 
     private String roleName;
+
+    @OneToMany(mappedBy = "role")
+//    @JsonManagedReference
+    private Set<User> users = new HashSet<>();
 
     // Getters, Setters, Constructors
     public Role() {
@@ -38,5 +41,13 @@ public class Role {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

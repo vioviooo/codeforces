@@ -48,7 +48,6 @@ public class ArchiveProblemController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-
     @DeleteMapping("/aboba/{id}")
     public ResponseEntity<Void> deleteArchiveProblem(@PathVariable Long id) {
         if (archiveProblemService.deleteArchiveProblem(id)) {

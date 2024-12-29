@@ -32,6 +32,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
+//    @JsonBackReference
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -43,7 +44,6 @@ public class User {
     @JsonManagedReference("reference-user-userproblem")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<UserProblem> problems = new HashSet<>();
-
 
     public User() {}
 

@@ -60,6 +60,9 @@ public class UserService {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new IllegalArgumentException("Username already exists.");
         }
+        if (user.getUsername().length() > 15) {
+            throw new IllegalArgumentException("Username too long");
+        }
         Role defaultRole = roleRepository.findByRoleName("USER")
                 .orElseThrow(() -> new IllegalArgumentException("Role not found"));
         user.setRole(defaultRole);
