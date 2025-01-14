@@ -30,6 +30,8 @@ public class User {
     private Integer contestsAttended;
     private LocalDateTime registrationDate;
 
+    private String profilePicture;
+
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
 //    @JsonBackReference
@@ -47,13 +49,14 @@ public class User {
 
     public User() {}
 
-    public User(String username, String email, String password, Integer contestsAttended, LocalDateTime registrationDate, Role role) {
+    public User(String username, String email, String password, Integer contestsAttended, LocalDateTime registrationDate, Role role, String profilePicture) {
         this.username = username;
         this.email = email;
         setPassword(password);
         this.contestsAttended = contestsAttended;
         this.registrationDate = registrationDate;
         this.role = role;
+        this.profilePicture = profilePicture;
     }
 
     public Long getUserId() {
@@ -106,6 +109,10 @@ public class User {
         return passwordHash;
     }
 
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
     public void setPassword(String password) {
         this.passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
     }
@@ -124,6 +131,10 @@ public class User {
 
     public void setProblems(Set<UserProblem> problems) {
         this.problems = problems;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public boolean checkPassword(String password) {

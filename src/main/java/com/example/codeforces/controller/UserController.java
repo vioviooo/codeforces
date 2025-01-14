@@ -32,14 +32,17 @@ public class UserController {
 
     private final BackupService backupService;
 
+    private final StorageService storageService;
+
     private final UserContestRepository userContestRepository;
 
     private final UserArchiveRepository userArchiveRepository;
 
-    public UserController(UserContestRepository userContestRepository, UserArchiveRepository userArchiveRepository, BackupService backupService) {
+    public UserController(UserContestRepository userContestRepository, UserArchiveRepository userArchiveRepository, BackupService backupService, StorageService storageService) {
         this.userContestRepository = userContestRepository;
         this.userArchiveRepository = userArchiveRepository;
         this.backupService = backupService;
+        this.storageService = storageService;
     }
 
     @GetMapping
@@ -136,6 +139,27 @@ public class UserController {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Failed to restore backup: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/{userId}/profile-picture")
+    public ResponseEntity<String> uploadProfilePicture(
+            @PathVariable Long userId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            if (file.isEmpty() || !file.getContentType().startsWith("image/")) {
+                return ResponseEntity.badRequest().body("Invalid file type.");
+            }
+
+            String imageUrl = storageService.saveProfilePicture(file, userId);
+
+            User user = userService.getUserByIdUser(userId);
+            user.setProfilePicture(imageUrl);
+            userService.updateUser(userId, user);
+
+            return ResponseEntity.ok(imageUrl);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file.");
         }
     }
 

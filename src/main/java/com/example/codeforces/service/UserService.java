@@ -4,6 +4,7 @@ import com.example.codeforces.db.Role;
 import com.example.codeforces.repository.RoleRepository;
 import com.example.codeforces.db.User;
 import com.example.codeforces.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,11 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public User getUserByIdUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+    }
+
     public User createUser(User user) {
         if (user.getRole() != null && roleRepository.existsById(user.getRole().getRoleId())) {
             return userRepository.save(user);
@@ -44,6 +50,7 @@ public class UserService {
             existingUser.setContestsAttended(updatedUser.getContestsAttended());
             existingUser.setRegistrationDate(updatedUser.getRegistrationDate());
             existingUser.setRole(updatedUser.getRole());
+            existingUser.setProfilePicture(updatedUser.getProfilePicture());
             return userRepository.save(existingUser);
         });
     }
