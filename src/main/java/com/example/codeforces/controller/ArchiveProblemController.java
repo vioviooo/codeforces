@@ -64,4 +64,11 @@ public class ArchiveProblemController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+    @GetMapping("/random-problem")
+    public ResponseEntity<ArchiveProblem> getRandomProblem() {
+        ArchiveProblem archiveProblem = archiveProblemService.getRandomProblem();
+        System.out.print("\nHere is random problem id: " + archiveProblem.getProblemId() + "\n");
+        return ResponseEntity.ok(archiveProblem);
+    }
 }

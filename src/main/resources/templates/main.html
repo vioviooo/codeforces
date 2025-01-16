@@ -86,6 +86,27 @@
       }
     }
 
+    async function fetchRandomProblem() {
+      try {
+        const response = await fetch("/archive-problems/random-problem", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (response.ok) {
+          const problem = await response.json();
+          window.location.href = `/archive-problems/problem-description?id=${problem.problemId}`;
+        } else {
+          alert("Failed to fetch a random problem. Please try again later.");
+        }
+      } catch (error) {
+        console.error("Error fetching random problem:", error);
+        alert("An error occurred. Please try again later.");
+      }
+    }
+
     window.onload = fetchUserData;
   </script>
 </head>
@@ -123,6 +144,9 @@
 
 <!-- User Info -->
 <p id="user-info"></p>
+
+<!-- Random Problem Button -->
+<button class="btn btn-primary mt-4" onclick="fetchRandomProblem()">Random Problem</button>
 
 </body>
 </html>

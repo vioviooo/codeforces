@@ -50,6 +50,10 @@ public class ArchiveProblemService {
                 .map(ArchiveProblemDetailDTO::fromEntity);
     }
 
+    public ArchiveProblem getRandomProblem() {
+        return archiveProblemRepository.findRandomProblem();
+    }
+
     // Delete a contest
     public boolean deleteArchiveProblem(Long id) {
         if (archiveProblemRepository.existsById(id)) {
